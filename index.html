@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PocketMonster Information</title>
+    <style>
+      * {
+        transition: 0.5s;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script>
+    const body = document.body;
+    const root = document.getElementById("root");
+    const imgArray = [];
+    const nameArray = [];
+    const guideArray = [];
+    ////
+    // 요소를 만들고 width와 height, flex 등 기본적인 값을 설정하는 함수가 모여있는 객체
+    const defaultSet = {
+      // 새로운 HTML 요소를 생성하는 함수 매개변수는 (원하는 html 타입,만들 요소의 개수, 부모 html 요소)이다
+      elementCreate: function (element, number, parent) {
+        for (let i = 0; i < number; i++) {
+          let newElement = document.createElement(element);
+          parent.appendChild(newElement);
+        }
+      },
+
+      // 요소의 width와 height 값을 설정하는 함수
+      widthAndHeight: function (element, width, height) {
+        element.style.width = width;
+        element.style.height = height;
+      },
+
+      // flex 스타일을 설정하는 함수
+      flexSetting: function (element, justify, align) {
+        element.style.display = "flex";
+        element.style.justifyContent = justify;
+        element.style.alignItems = align;
+      },
+      // body margin, padding 초기화 함수
+      reset: function () {
+        body.style.margin = "0";
+        body.style.padding = "0";
+        body.style.boxSizing = "border-box";
+        body.style.userSelect = "none";
+        body.style.transition = "0.5s";
+      },
+    };
+
+    // bgColor나 fontSetting 등 스타일링 기능을 하는 함수들이 모여있는 객체
+    const styling = {
+      // display를 설정하는 함수
+
+      displaySetting: function (element, display) {
+        element.style.display = display;
+      },
+
+      // background-color를 설정하는 함수
+      bgColorStyling: function (element, color) {
+        element.style.backgroundColor = color;
+      },
+
+      // textContent를 설정하는 함수
+      textContentSetting: function (element, text) {
+        element.textContent = text;
+      },
+
+      // 폰트의 color와 size를 설정하는 함수
+      fontSetting: function (element, color, size) {
+        element.style.color = color;
+        element.style.fontSize = size;
+      },
+
+      // border-radius를 설정하는 함수
+      borderRadius: function (element, radius) {
+        element.style.borderRadius = radius;
+      },
+
+      // 투명도를 설정하는 함수
+      opacitySetting: function (element, number) {
+        element.style.opacity = number;
+      },
+
+      // pointerEvent를 설정하는 함수 (중복 클릭 방지를 위함)
+      pointerEventSetting: function (element, event) {
+        element.style.pointerEvents = event;
+      },
+
+      // trasnform을 설정하는 함수
+      transformSetting: function (element, transform) {
+        element.style.transform = transform;
+      },
+    };
+
+    body.style.backgroundColor = "salmon";
+
+    const elementdefault = {
+      rootDefault: function () {
+        defaultSet.widthAndHeight(root, "100vw", "100vh");
+        defaultSet.flexSetting(root, "center", "center");
+      },
+
+      rootBox: function () {
+        defaultSet.elementCreate("div", 1, root); // box
+        defaultSet.widthAndHeight(root.children[0], "1500px", "500px");
+        defaultSet.flexSetting(root.children[0], "center", "center");
+        root.children[0].style.gap = "100px";
+      },
+
+      rootBoxItem: function () {
+        defaultSet.elementCreate("div", 3, root.children[0]); // 화살표 몬스터박스 화살표
+        defaultSet.widthAndHeight(
+          root.children[0].children[1],
+          "1200px",
+          "500px"
+        );
+        defaultSet.flexSetting(
+          root.children[0].children[1],
+          "center",
+          "center"
+        );
+
+        root.children[0].children[1].style.overflow = "hidden";
+      },
+
+      MonsterContainer: function () {
+        defaultSet.elementCreate("div", 1, root.children[0].children[1]); // 몬스터 박스
+
+        defaultSet.widthAndHeight(
+          root.children[0].children[1].children[0],
+          "100%",
+          "100%"
+        );
+
+        defaultSet.flexSetting(
+          root.children[0].children[1].children[0],
+          "flex-start",
+          "center"
+        );
+        root.children[0].children[1].children[0].style.gap = "20px";
+        root.children[0].children[1].children[0].style.flexShrink = "0";
+      },
+
+      leftItem: function () {
+        root.children[0].children[0].setAttribute(
+          "class",
+          "fa-solid fa-chevron-left"
+        );
+        styling.fontSetting(root.children[0].children[0], "gray", "3rem");
+        root.children[0].children[0].style.cursor = "pointer";
+      },
+
+      rightItem: function () {
+        root.children[0].children[2].setAttribute(
+          "class",
+          "fa-solid fa-chevron-right"
+        );
+        styling.fontSetting(root.children[0].children[2], "gray", "3rem");
+        root.children[0].children[2].style.cursor = "pointer";
+      },
+    };
+
+    const apikey = {
+      ability: "ability",
+      berry: "berry",
+      berryfirmness: "berry-firmness",
+      berryflavor: "berry-flavor",
+      characteristic: "characteristic",
+      contesteffect: "contest-effect",
+      contesttype: "contest-type",
+      egggroup: "egg-group",
+      encountercondition: "encounter-condition",
+      encounterconditionvalue: "encounter-condition-value",
+      encountermethod: "encounter-method",
+      evolutionchain: "evolution-chain",
+      evolutiontrigger: "evolution-trigger",
+      gender: "gender",
+      generation: "generation",
+      growthrate: "growth-rate",
+      item: "item",
+      itemattribute: "item-attribute",
+      itemcategory: "item-category",
+      itemflingeffect: "item-fling-effect",
+      itempocket: "item-pocket",
+      language: "language",
+      location: "location",
+      locationarea: "location-area",
+      machine: "machine",
+      move: "move",
+      moveailment: "move-ailment",
+      movebattlestyle: "move-battle-style",
+      movecategory: "move-category",
+      movedamageclass: "move-damage-class",
+      movelearnmethod: "move-learn-method",
+      movetarget: "move-target",
+      nature: "nature",
+      palparkarea: "pal-park-area",
+      pokeathlonstat: "pokeathlon-stat",
+      pokedex: "pokedex",
+      pokemon: "pokemon",
+      pokemoncolor: "pokemon-color",
+      pokemonform: "pokemon-form",
+      pokemonhabitat: "pokemon-habitat",
+      pokemonshape: "pokemon-shape",
+      pokemonspecies: "pokemon-species",
+      region: "region",
+      stat: "stat",
+      supercontesteffect: "super-contest-effect",
+      type: "type",
+      version: "version",
+      versiongroup: "version-group",
+    };
+
+    async function apiCall(type, callCount) {
+      let count = 0;
+      let response = await fetch(`https://pokeapi.co/api/v2/${type}`);
+      let result = response.json();
+      result.then((value) => {
+        for (let i = 0; i <= callCount; i++) {
+          if (type === `pokemon-form/${i}`) {
+            imgArray.push(value.sprites.front_default);
+          }
+          if (type === `pokemon-species/${i}`) {
+            value.names.forEach((elem) => {
+              if (elem.language.name === "ko") {
+                nameArray.push(elem.name);
+              }
+            });
+
+            // value.genera.forEach((elem) => {
+            //   if (elem.language.name === "ko") {
+            //     console.log(elem.genus);
+            //   }
+            // });
+
+            value.flavor_text_entries.forEach((elem) => {
+              if (elem.language.name === "ko" && count === 0) {
+                guideArray.push(elem.flavor_text);
+                count++;
+              }
+            });
+          }
+        }
+      });
+    }
+
+    function DataCall(count) {
+      for (let i = 1; i <= count; i++) {
+        apiCall(`${apikey.pokemonform}/${[i]}`, count); // spirtes 불러오는 것
+        apiCall(`${apikey.pokemonspecies}/${[i]}`, count); // 포켓몬 이름, 속성,
+      }
+    }
+
+    function monsterCreate(number) {
+      DataCall(number);
+
+      setTimeout(() => {
+        for (i = 0; i < number; i++) {
+          let monsterItem = document.createElement("div", monsterBox);
+          defaultSet.widthAndHeight(monsterItem, "285px", "inherit");
+          defaultSet.flexSetting(monsterItem, "center", "center");
+          monsterItem.style.flexShrink = "0";
+          monsterItem.style.flexDirection = "column";
+          monsterItem.style.gap = "20px";
+          monsterItem.style.cursor = "pointer";
+          monsterBox.appendChild(monsterItem);
+
+          monsterItem.addEventListener("mouseover", function () {
+            styling.bgColorStyling(monsterItem, "lightgreen");
+          });
+          monsterItem.addEventListener("mouseout", function () {
+            styling.bgColorStyling(monsterItem, "unset");
+          });
+
+          defaultSet.elementCreate("img", 1, monsterItem);
+          monsterItem.children[0].src = imgArray[i];
+          monsterItem.children[0].pointerEvents = "none";
+
+          defaultSet.elementCreate("p", 2, monsterItem);
+          defaultSet.widthAndHeight(monsterItem.children[1], "auto", "auto");
+          defaultSet.flexSetting(monsterItem.children[1], "center", "center");
+          styling.fontSetting(monsterItem.children[1], "black", "2rem");
+          monsterItem.children[1].style.borderBottom = "5px solid lightgray";
+          monsterItem.children[1].style.paddingBottom = "15px";
+          monsterItem.children[1].style.fontWeight = "bold";
+          monsterItem.children[1].pointerEvents = "none";
+
+          monsterItem.children[1].textContent = nameArray[i];
+
+          defaultSet.widthAndHeight(monsterItem.children[2], "80%", "50px");
+          defaultSet.flexSetting(monsterItem.children[2], "center", "center");
+          styling.fontSetting(monsterItem.children[2], "black", "0.8rem");
+          monsterItem.children[2].style.fontWeight = "bold";
+          monsterItem.children[2].pointerEvents = "none";
+
+          monsterItem.children[2].textContent = guideArray[i];
+        }
+      }, 1000);
+    }
+
+    defaultSet.reset();
+    elementdefault.rootDefault();
+    elementdefault.rootBox();
+    elementdefault.rootBoxItem();
+    elementdefault.leftItem();
+    elementdefault.MonsterContainer();
+    elementdefault.rightItem();
+    const monsterBox = root.children[0].children[1].children[0];
+    monsterCreate(300);
+    let moveValue = 0;
+
+    function leftMove() {
+      moveValue -= 285;
+      return moveValue;
+    }
+
+    function rightMove() {
+      moveValue += 285;
+      return moveValue;
+    }
+
+    body.addEventListener("mouseover", function (e) {
+      if (e.target === root.children[0].children[0]) {
+        e.target.style.color = "black";
+      }
+      if (e.target === root.children[0].children[2]) {
+        e.target.style.color = "black";
+      }
+    });
+
+    body.addEventListener("mouseout", function (e) {
+      if (e.target === root.children[0].children[0]) {
+        e.target.style.color = "gray";
+      }
+      if (e.target === root.children[0].children[2]) {
+        e.target.style.color = "gray";
+      }
+    });
+
+    root.children[0].children[0].addEventListener("click", function (e) {
+      root.children[0].children[1].children[0].style.transform = `translateX(${leftMove()}px)`;
+      console.log(root.children[0].children[1].children[0].style.transform);
+    });
+
+    root.children[0].children[2].addEventListener("click", function (e) {
+      root.children[0].children[1].children[0].style.transform = `translateX(${rightMove()}px)`;
+      console.log(root.children[0].children[1].children[0].style.transform);
+    });
+  </script>
+  <script
+    src="https://kit.fontawesome.com/40b01548e0.js"
+    crossorigin="anonymous"
+  ></script>
+</html>
